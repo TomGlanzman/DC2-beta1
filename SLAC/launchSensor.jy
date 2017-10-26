@@ -1,0 +1,84 @@
+## launchSensor.jy
+##
+##  Runs as a jython scriptlet from a Pipeline task
+##
+import os,sys
+from java.util import HashMap
+
+## print 'getProcess = ',pipeline.getProcess()
+## print 'getStream = ',pipeline.getStream()
+## print 'getStreamPath = ',pipeline.getStreamPath()
+## print 'getTask = ',pipeline.getTask()
+## print 'getTaskVersion = ',pipeline.getTaskVersion()
+## print 'getTaskVersionPath = ',pipeline.getTaskVersionPath()
+
+## Extract pipeline variables from the setupVisit step
+thisStream = pipeline.getCurrentStream()
+parentStream = thisStream.getParentStream()
+setupVisit = parentStream.getProcessInstance('setupVisit')
+
+ntrims = setupVisit.getVariable('DC2_NTRIMS')
+print 'Number of trim jobs = ',ntrims
+
+nsnap = setupVisit.getVariable('DC2_NSNAP')
+print 'Number of snaps per visit = ',nsnap
+
+visit = setupVisit.getVariable('DC2_OBSHISTID')
+print 'Visit number (obshistid) = ',visit
+
+cfilter = setupVisit.getVariable('DC2_FILTER')
+print 'Color filter = ',cfilter
+
+centroidfile = setupVisit.getVariable('DC2_CENTROIDFILE')
+print 'Centroid file = ',centroidfile
+
+toplevel6 = setupVisit.getVariable('DC2_TOPLEVEL6')
+print 'TOPLEVEL6 = ',toplevel6
+
+outDir = setupVisit.getVariable('DC2_PHOSIMOUT')
+print 'outDir = ',outDir
+
+runTrim = pipeline.getProcessInstance('RunTrim')
+
+sensors = runTrim.getVariable('DC2_SENSORLIST')
+print 'sensors = ',sensors
+sensorList = sensors.split(',')
+print 'sensorsList = ',sensorList
+numSensors = len(sensorList)
+
+print 'DC2_NUM_SENSORS = ',DC2_NUM_SENSORS
+print 'DC2_SELECTED_SENSORLIST = ',DC2_SELECTED_SENSORLIST
+selectedSensorList = DC2_SELECTED_SENSORLIST.split(',')
+print 'selectedSensorList: ',selectedSensorList
+
+vars = HashMap()
+
+############################################ DEBUG DEBUG DEBUG ############
+############################################ DEBUG DEBUG DEBUG ############
+#numSensors = 1
+#print 'OVERRIDING numSensors: setting to ',numSensors
+############################################ DEBUG DEBUG DEBUG ############
+############################################ DEBUG DEBUG DEBUG ############
+
+vars.put("DC2_NTRIMS",ntrims)
+vars.put("DC2_NSNAP",nsnap)
+vars.put("DC2_OBSHISTID",visit)
+vars.put("DC2_FILTER",cfilter)
+vars.put("DC2_CENTROIDFILE",centroidfile)
+vars.put("DC2_TOPLEVEL6",toplevel6)
+vars.put("DC2_PHOSIMOUT",outDir)
+
+
+## The number of sensor jobs = 9(normal raft) or 1(optical path difference)
+numStreams = 0
+for sensor in range(0,numSensors):
+    sensorID = sensorList[sensor]
+    if sensorID not in selectedSensorList: continue   # skip if sensor not needed for this dither pattern
+    print 'Create substream for sensor ',sensorID
+    vars.put("DC2_SENSORID",sensorID)
+    pipeline.createSubstream("singleSensor",sensor,vars)
+    numStreams += 1
+    pass
+
+print 'Number of sensor sub-streams created = ',numStreams
+

@@ -1,0 +1,38 @@
+INPUT:
+instanceCatalog
+phosim_cat_<obhistid>.txt.gz
+phosim_cat_40338.txt.gz
+
+
+condor submit files
+<step>_<obshistid>_<raftID>.submit    (trim)
+trim_195755_12.submit
+
+<step>_<obshistid>_<sensorID>_E<exposure>.submit    (e2adc)
+e2adc_195755_R23_S22_E000.submit
+
+<step>_<obshistid>_<sensorID>_E<exposure>_<ckpt>.submit    (raytrace)
+raytrace_195755_R23_S22_E000_0.submit
+
+parameters file
+<step>_<obshistid>_<raftID>.pars    (trim)
+trim_195755_12.pars
+
+<step>_<obshistid>_<sensorID>_E<exposure>.pars    (e2adc)
+e2adc_195755_R23_S22_E000.pars
+
+<step>_<obshistid>_<sensorID>_E<exposure>_<ckpt>.pars   (raytrace)
+raytrace_195755_R23_S22_E000_0.pars
+
+OUTPUT:
+centroid file
+<type>_<instrument>_e_<obshistid>_f<filter#>_<sensorID>_E<exposure>.txt
+centroid_lsst_e_195755_f2_R13_S11_E000.txt
+
+electron file
+<instrument>_e_<obshistid>_f<filter#>_<sensorID>_E<exposure>.fits.gz
+lsst_e_195755_f2_R34_S11_E000.fits.gz
+
+amplifier file
+<instrument>_a_<obshistid>_f<filter#>_<sensorID>_E<exposure>.fits.gz
+lsst_a_195755_f2_R34_S11_E000.fits.gz

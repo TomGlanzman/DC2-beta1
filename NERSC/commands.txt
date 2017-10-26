@@ -1,0 +1,16 @@
+# commands.txt - phoSim commands/physics-overrides
+# 1/12/2017 -- initialize
+# 2/1/2017 -- after first round of updates
+
+# Enable centroid file
+centroidfile 1
+
+# Disable sensor effects
+cleardefects
+fringing 0
+
+# Disable dirt
+contaminationmode 0
+
+# Set the nominal dark sky brightness
+zenith_v 21.8

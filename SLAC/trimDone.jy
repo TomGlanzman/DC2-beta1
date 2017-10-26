@@ -1,0 +1,5 @@
+## trimDone.jy
+##
+##  Runs as a jython scriptlet from a Pipeline task
+##
+######### Dummy (for now) to force proper pipeline dependency on sub-sub-tasks

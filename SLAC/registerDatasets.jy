@@ -1,0 +1,144 @@
+## registerDatasets.jy
+##
+## register data products produced by phoSim in the 'runRaytrace' step of the 'singleSensor' subtask
+##
+
+## General note: pipeline variables defined in the .xml are available
+## without prelude.  Variables defined within the running task must be
+## requested by streamID.
+
+
+from java.util import HashMap
+from java.lang import String
+from java.lang import Number
+from java.util.regex import Pattern
+import os,sys
+
+
+## metadata
+## everything in instance catalog?
+## parts of command/override file?
+##  visit number (obshistid)
+##  filter
+##  
+
+def register():
+
+
+    ## print '1- DC2_SENSORID = ',DC2_SENSORID
+
+    ## Prepare to extract and store metadata
+    raytraceID = pipeline.getProcessInstance("RunRaytrace")
+    raytraceVars = HashMap(raytraceID.getVariables())
+    outputFiles = raytraceVars.get("DC2_OUTPUTLIST")   # list of output data product filenames
+    ## print '2- raytraceVars.keySet() = ',raytraceVars.keySet()
+
+    if outputFiles is None:
+        print "No output files detected."
+        return 1
+        pass
+
+
+    rStream = raytraceID.getStream()
+    pStream = rStream.getParentStream()
+    trimID = pStream.getProcessInstance("RunTrim")
+    trimVars = HashMap(trimID.getVariables())
+    ## print '3- trimVars.keySet() = ',trimVars.keySet()
+
+
+    tStream = pStream.getParentStream()
+    setupID = tStream.getProcessInstance("setupVisit")
+    setupVars = HashMap(setupID.getVariables())
+    ## print '4- setupVars.keySet() = ',setupVars.keySet()
+    ## sys.stdout.flush()
+
+
+    ## These data come from env-vars in the processing step
+    outputDir = DC2_OUTPUT                             # NERSC directory containing output data products
+    obsHistID = setupVars.get("DC2_OBSHISTID")         # visit ID
+    sensorID = DC2_SENSORID                            # sensor ID
+    filterID = setupVars.get("DC2_FILTER")             # filter # (ugrizy => 012345)
+
+    taskVersionPath = pipeline.getTaskVersionPath()     # bookkeeping (taskname, etc.)
+    task = taskVersionPath.split("(")[0]
+    taskVersion = taskVersionPath.split('/')[0]
+    streamPath = pipeline.getStreamPath()               # bookkeeping (stream hierarchy)
+
+
+    ## print '1 outputDir = ',outputDir
+    ## print '2 outputFiles = ',outputFiles
+    ## print '3 obsHistID = ',obsHistID
+    ## print '4 sensorID = ',sensorID
+    ## print '5 filterID = ',filterID
+    ## print '6 taskVersionPath = ',taskVersionPath
+    ## print '7 streamPath = ',streamPath
+    ## print '8 task = ',task
+    ## print '8.5 taskVersion = ',taskVersion
+    ## sys.stdout.flush()
+
+
+
+    ## DataCatalog path for data products
+    ## /LSST-DESC/DC2/<taskName>/<obsHistID>/<filename>
+    ## where "<obsHistID>" is a dataCatalog "group"
+    datacatRoot = os.path.join('/LSST-DESC/DC2',task)
+    ## print '9 datacatRoot = ',datacatRoot
+
+    ## file types:  lsst_e (fits.gz), lsst_a (fits.gz), centroid (txt), other?
+
+    ## MetaData to store
+    ##  
+    md = HashMap()
+    md.put('nObsHistID',obsHistID)
+    md.put('sensorID',sensorID)
+    md.put('nFilterID',filterID)
+    md.put('streamPath',streamPath)
+    md.put('task',taskVersion)
+
+    
+    ## Register dataset
+
+    site = 'NERSC'
+    group = str(obsHistID)
+    outList = outputFiles.split(',')
+    print 'outList = ',outList
+    if len(outList) > 0:
+        for outFile in outList:
+            fn = os.path.basename(outFile)
+            print 'fn = ',fn
+            if outFile.endswith('.fits'):
+                fType = 'fits'
+            elif outFile.endswith('fits.gz'):
+                fType = 'fits.gz'
+            elif outFile.endswith('.txt'):
+                fType = 'txt'
+            else:
+                fType = 'dat'
+                pass
+            dType = 'PHOSIM'
+
+            print 'Registration: ',fn,'\n filetype and datatype: ',fType,', ',dType,'\n datacat location: ',datacatRoot,':',group,'\n site:location ',site,':',outFile
+
+            ds = datacatalog.newDataset(fn,fType,dType,datacatRoot,group,site,outFile)
+            datacatalog.registerDataset(ds,md,True)
+            pass
+        pass
+    
+    ## Done.
+    return 0
+
+
+if __name__ == "__main__":
+    rc = register()
+    print 'Return from register = ',rc
+    sys.exit(rc)
+
+    '''
+    public NewDataset newDataset(String name,
+                    String fileFormat,
+                    String dataType,
+                    String logicalFolderPath,
+                    String groupName,
+                    String site,
+                    String location)
+                    '''

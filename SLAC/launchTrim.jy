@@ -1,0 +1,79 @@
+## launchTrim.jy
+##
+##  Runs as a jython scriptlet from a Pipeline task
+##
+import os,sys
+from java.util import HashMap
+
+### Example: extract pipeline variable
+## parentPI = pipeline.getProcessInstance('setupVisit')
+## run = parentPI.getVariable("RUN")
+
+## Extract pipeline variables from the setupVisit step
+setupVisit = pipeline.getProcessInstance('setupVisit')
+
+ntrims = setupVisit.getVariable('DC2_NTRIMS')
+print 'Number of trim jobs to start = ',ntrims
+
+nsnap = setupVisit.getVariable('DC2_NSNAP')
+print 'Number of snaps per visit = ',nsnap
+
+visit = setupVisit.getVariable('DC2_OBSHISTID')
+print 'Visit number (obshistid) = ',visit
+
+cfilter = setupVisit.getVariable('DC2_FILTER')
+print 'Color filter = ',cfilter
+
+centroidfile = setupVisit.getVariable('DC2_CENTROIDFILE')
+print 'Centroid file = ',centroidfile
+
+toplevel6 = setupVisit.getVariable('DC2_TOPLEVEL6')
+print 'TOPLEVEL6 = ',toplevel6
+
+outDir = setupVisit.getVariable('DC2_PHOSIMOUT')
+print 'outDir = ',outDir
+
+numSensors = setupVisit.getVariable('DC2_NUM_SENSORS')
+print 'numSensors = ',numSensors
+
+sensorList1 = setupVisit.getVariable('DC2_SENSORLIST_1')
+sensorList2 = setupVisit.getVariable('DC2_SENSORLIST_2')
+print 'sensorList1 = ',sensorList1
+print 'sensorList2 = ',sensorList2
+if sensorList2 == None:
+    sensorList = sensorList1
+else:
+    sensorList = ','.join([sensorList1,sensorList2]).strip(',')
+    pass
+print 'sensorList = ',sensorList
+
+vars = HashMap()
+
+############################################ DEBUG DEBUG DEBUG ############
+############################################ DEBUG DEBUG DEBUG ############
+#ntrims = 1
+#print 'OVERRIDING ntrims: setting to ',ntrims
+############################################ DEBUG DEBUG DEBUG ############
+############################################ DEBUG DEBUG DEBUG ############
+
+vars.put("DC2_NTRIMS",ntrims)
+vars.put("DC2_NSNAP",nsnap)
+vars.put("DC2_OBSHISTID",visit)
+vars.put("DC2_FILTER",cfilter)
+vars.put("DC2_CENTROIDFILE",centroidfile)
+vars.put("DC2_TOPLEVEL6",toplevel6)
+vars.put("DC2_PHOSIMOUT",outDir)
+vars.put("DC2_NUM_SENSORS",numSensors)
+vars.put("DC2_SELECTED_SENSORLIST",sensorList)
+
+## Note that the number of trim jobs = 21(#rafts) + 1(optical path difference)
+print 'ntrims = ',ntrims
+print 'numSensors = ',numSensors
+if numSensors > 0:
+    for trim in range(0,ntrims):
+        pipeline.createSubstream("trim",trim,vars)
+        pass
+else:
+    print 'No sensors to simulate for this visit!'
+    pass
+    
