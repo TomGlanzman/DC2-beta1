@@ -4,7 +4,7 @@
           xs:schemaLocation="http://glast-ground.slac.stanford.edu/pipeline 
           http://srs.slac.stanford.edu/Pipeline-II/schemas/2.1/pipeline.xsd">
 
-    <task name="DC2-beta1" type="LSST" version="0.200">
+    <task name="DC2-beta1" type="LSST" version="0.100">
         <notation>Generate phoSim images for DESC DC2 proto</notation> 
 
         <variables>
