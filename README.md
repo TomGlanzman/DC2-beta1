@@ -1,2 +1,2 @@
-# DC2-beta1
+# DC2-phoSim-1
 SLAC workflow-based DC2 prototype task
