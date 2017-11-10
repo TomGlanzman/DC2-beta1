@@ -4,11 +4,11 @@
           xs:schemaLocation="http://glast-ground.slac.stanford.edu/pipeline 
           http://srs.slac.stanford.edu/Pipeline-II/schemas/2.1/pipeline.xsd">
 
-    <task name="DC2-beta1" type="LSST" version="0.100">
+    <task name="DC2-phoSim-1" type="LSST" version="0.100">
         <notation>Generate phoSim images for DESC DC2 proto</notation> 
 
         <variables>
-            <var name="TASKNAME">DC2-beta1</var>
+            <var name="TASKNAME">DC2-phoSim-1</var>
 
             <!-- Where/how will jobs be run? 
               CORI = cori-haswell shared queue
