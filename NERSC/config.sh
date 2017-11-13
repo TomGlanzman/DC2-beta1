@@ -19,7 +19,9 @@ export DC2_MINMAG=10.0
 
 ## Static Instance Catalogs...
 ## 3/27/2017 - Mustafa's private scratch area for collecting instanceCatalogs
-export PHOSIM_CATALOGS="/global/cscratch1/sd/mustafa/DC2-phoSim-3"
+#export PHOSIM_CATALOGS="/global/cscratch1/sd/mustafa/DC2-phoSim-3"
+## 11/13/2017 - Test DC2 area for instanceCatalogs
+export PHOSIM_CATALOGS="/global/cscratch1/sd/descpho/Pipeline-tasks/DC2-phoSim-1/catalogs"
 
 
 DC2base=`dirname ${DC2_ROOT}`
