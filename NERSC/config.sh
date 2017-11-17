@@ -33,7 +33,7 @@ export PHOSIM_COMMANDS=${DC2_CONFIGDIR}/commands.txt
 ###SEDLIB = '/nfs/farm/g/lsst/u1/software/redhat6-x86_64-64bit-gcc44/DMstack/v12_0/opt/lsst/sims_sed_library'
 
 ## Global and persistent scratch space to where phoSim 'work' directory will be staged
-export PHOSIM_SCR_ROOT=/global/cscratch1/sd/desc/Pipeline-tasks/${TASKNAME}
+export PHOSIM_SCR_ROOT=/global/cscratch1/sd/descpho/Pipeline-tasks/${TASKNAME}
 #export PHOSIM_SCR_ROOT=${SCRATCH}/Pipeline-tasks/${TASKNAME}
 ## Flag for cleaning up $SCRATCH after visit is complete (0=disable, 1=enable)
 export PHOSIM_SCR_CLEANUP=0

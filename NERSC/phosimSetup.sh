@@ -35,6 +35,9 @@ export PATH=$DMTCP_ROOT/bin:$PATH
 export MANPATH=$DMTCP_ROOT/share/man:$MANPATH
 
 ## Module shenanigans on cori to run phoSim and DMTCP (checkpointing)
+## By default, logging into Haswell or KNL will set up "Intel"
+## development and runtime environments.
+
 if [ $compiler == 'gcc' ]; then
     module swap PrgEnv-intel PrgEnv-gnu
     module swap gcc gcc/5.2.0
